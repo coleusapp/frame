@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('token_hash', 64)->unique();
             $table->string('search_query')->nullable();
+            $table->json('sources');
             $table->unsignedInteger('interval_seconds')->default(60);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
