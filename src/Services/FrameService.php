@@ -21,15 +21,14 @@ class FrameService extends Service
     /** @return Builder<Frame> */
     public function defaultQuery(): Builder
     {
-        return Frame::query()->orderBy('name');
+        return Frame::query()
+            ->withCount('artworks')
+            ->orderBy('name');
     }
 
-    /** @return Collection<int, Frame> */
-    public function list(): Collection
+    public function default(): Frame
     {
-        return $this->defaultQuery()
-            ->withCount('artworks')
-            ->get();
+        return new Frame(['sources' => Frames::artwork()->sourceKeys()]);
     }
 
     public function show(Frame $frame): Frame

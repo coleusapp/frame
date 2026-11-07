@@ -11,6 +11,11 @@
     },
     "dependencies": {
         "@coleus/support": "workspace:*",
+        "@formkit/auto-animate": "catalog:dep",
+        "@formkit/icons": "catalog:dep",
+        "@formkit/inertia": "catalog:dep",
+        "@formkit/pro": "catalog:dep",
+        "@formkit/vue": "catalog:dep",
         "@inertiajs/vue3": "catalog:dep",
         "@nuxt/ui": "catalog:dep",
         "@tailwindcss/vite": "catalog:dep",

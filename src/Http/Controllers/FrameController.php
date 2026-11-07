@@ -5,6 +5,8 @@ namespace Coleus\Frame\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Coleus\Frame\Facades\Frames;
 use Coleus\Frame\Http\Requests\FrameRequest;
+use Coleus\Frame\Http\Resources\ArtworkSourceResource;
+use Coleus\Frame\Http\Resources\FrameResource;
 use Coleus\Frame\Models\Frame;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -16,19 +18,16 @@ class FrameController extends Controller
 
     public function index(): Response
     {
-        return Inertia::render('Index', [
-            'frames' => Frames::frame()
-                ->list()
-                ->map(fn (Frame $frame) => $frame->only('id', 'name', 'is_active', 'artworks_count')),
+        return Inertia::render('frames/Index', [
+            'collection' => FrameResource::collection(Frames::frame()->index()),
         ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('Edit', [
-            'frame' => null,
-            'kioskUrl' => null,
-            'sources' => Frames::artwork()->sourceOptions(),
+        return Inertia::render('frames/Create', [
+            'resource' => FrameResource::make(Frames::frame()->default()),
+            'sources' => ArtworkSourceResource::collection(Frames::artwork()->sources()),
         ]);
     }
 
@@ -43,12 +42,10 @@ class FrameController extends Controller
     {
         $token = session(self::TOKEN_FLASH_KEY);
 
-        return Inertia::render('Edit', [
-            'frame' => Frames::frame()
-                ->show($frame)
-                ->only('id', 'name', 'search_query', 'sources', 'interval_seconds', 'is_active', 'artworks_count'),
-            'kioskUrl' => $token ? route('frame.kiosk.show', ['token' => $token]) : null,
-            'sources' => Frames::artwork()->sourceOptions(),
+        return Inertia::render('frames/Edit', [
+            'resource' => FrameResource::make(Frames::frame()->show($frame)),
+            'sources' => ArtworkSourceResource::collection(Frames::artwork()->sources()),
+            'kiosk_url' => $token ? route('frame.kiosk.show', ['token' => $token]) : null,
         ]);
     }
 
@@ -56,7 +53,7 @@ class FrameController extends Controller
     {
         Frames::frame()->update($frame, $request->validated());
 
-        return to_route('frame.edit', ['frame' => $frame]);
+        return back();
     }
 
     public function destroy(Frame $frame): RedirectResponse
@@ -77,6 +74,6 @@ class FrameController extends Controller
     {
         Frames::artwork()->queueFetch($frame);
 
-        return to_route('frame.edit', ['frame' => $frame]);
+        return back();
     }
 }

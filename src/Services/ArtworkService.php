@@ -46,12 +46,14 @@ class ArtworkService
             ->all();
     }
 
-    /** @return list<array{value: string, label: string}> */
-    public function sourceOptions(): array
+    /**
+     * Read on every fetch rather than injected, so frame.sources can change at runtime.
+     *
+     * @return Collection<int, ArtworkSource>
+     */
+    public function sources(): Collection
     {
-        return $this->sources()
-            ->map(fn (ArtworkSource $source) => ['value' => $source->key(), 'label' => $source->name()])
-            ->all();
+        return collect(config('frame.sources'))->map(fn (string $source) => app($source));
     }
 
     public function directory(Frame $frame): string
@@ -115,16 +117,6 @@ class ArtworkService
                 $this->disk()->delete($artwork->path);
                 $artwork->delete();
             });
-    }
-
-    /**
-     * Read on every fetch rather than injected, so frame.sources can change at runtime.
-     *
-     * @return Collection<int, ArtworkSource>
-     */
-    private function sources(): Collection
-    {
-        return collect(config('frame.sources'))->map(fn (string $source) => app($source));
     }
 
     /**
