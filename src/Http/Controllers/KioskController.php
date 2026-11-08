@@ -9,7 +9,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class KioskController extends Controller
@@ -18,12 +17,7 @@ class KioskController extends Controller
     {
         $frame = $this->frameOrFail($token);
 
-        return view('frame::kiosk', [
-            'nextUrl' => route('frame.kiosk.next', ['token' => $token], false),
-            'inset' => Frames::kiosk()->inset($frame),
-            'backgroundColor' => $frame->background_color,
-            'rotation' => $frame->rotation,
-        ]);
+        return view('frame::kiosk', Frames::kiosk()->page($frame, route('frame.kiosk.next', ['token' => $token], false)));
     }
 
     public function next(Request $request, string $token): JsonResponse|Response
@@ -36,28 +30,18 @@ class KioskController extends Controller
             return response()->noContent();
         }
 
-        return response()->json([
-            'id' => $artwork->id,
-            'image_url' => route('frame.kiosk.image', ['token' => $token, 'artwork' => $artwork->id], false),
-            'title' => $artwork->title,
-            'artist' => $artwork->artist_display,
-            'date' => $artwork->date_display,
-            'interval_seconds' => $frame->interval_seconds,
-            'inset' => Frames::kiosk()->inset($frame),
-            'background_color' => $frame->background_color,
-            'show_caption' => $frame->show_caption,
-            'rotation' => $frame->rotation,
-        ]);
+        return response()->json(Frames::kiosk()->payload(
+            $frame,
+            $artwork,
+            route('frame.kiosk.image', ['token' => $token, 'artwork' => $artwork->id], false),
+        ));
     }
 
     public function image(string $token, int $artwork): StreamedResponse
     {
         $artwork = Frames::kiosk()->artwork($this->frameOrFail($token), $artwork) ?? $this->notFound();
 
-        return Storage::disk(config('frame.disk'))->response($artwork->path, null, [
-            'Content-Type' => 'image/jpeg',
-            'Cache-Control' => 'private, max-age=31536000, immutable',
-        ]);
+        return Frames::kiosk()->imageResponse($artwork);
     }
 
     private function frameOrFail(string $token): Frame

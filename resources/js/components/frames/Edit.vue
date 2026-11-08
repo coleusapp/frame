@@ -38,5 +38,11 @@ const submit = () =>
         <template #default="{ value }">
             <FrameForm :value="value as FrameRequest" />
         </template>
+        <template #actions>
+            <div class="flex gap-2">
+                <UiButton type="submit" :disabled="form.processing.value">Save</UiButton>
+                <UiButton :href="route('frame.preview', { frame: resource.data.id })" target="_blank" variant="outline" icon="i-lucide-eye">Preview</UiButton>
+            </div>
+        </template>
     </Form>
 </template>

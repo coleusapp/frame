@@ -8,6 +8,7 @@ use Coleus\Users\Models\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class KioskService
 {
@@ -32,6 +33,34 @@ class KioskService
             ->first();
     }
 
+    /** @return array{nextUrl: string, inset: array{top: int, right: int, bottom: int, left: int}, backgroundColor: string, rotation: int} */
+    public function page(Frame $frame, string $nextUrl): array
+    {
+        return [
+            'nextUrl' => $nextUrl,
+            'inset' => $this->inset($frame),
+            'backgroundColor' => $frame->background_color,
+            'rotation' => $frame->rotation,
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    public function payload(Frame $frame, FrameArtwork $artwork, string $imageUrl): array
+    {
+        return [
+            'id' => $artwork->id,
+            'image_url' => $imageUrl,
+            'title' => $artwork->title,
+            'artist' => $artwork->artist_display,
+            'date' => $artwork->date_display,
+            'interval_seconds' => $frame->interval_seconds,
+            'inset' => $this->inset($frame),
+            'background_color' => $frame->background_color,
+            'show_caption' => $frame->show_caption,
+            'rotation' => $frame->rotation,
+        ];
+    }
+
     /** @return array{top: int, right: int, bottom: int, left: int} */
     public function inset(Frame $frame): array
     {
@@ -45,15 +74,17 @@ class KioskService
 
     public function next(Frame $frame, ?int $currentArtworkId): ?FrameArtwork
     {
-        $artwork = $this->pick($frame, $currentArtworkId) ?? ($currentArtworkId ? $this->pick($frame, null) : null);
+        $artwork = $this->preview($frame, $currentArtworkId);
 
-        if (!$artwork) {
-            return null;
-        }
-
-        $artwork->forceFill(['last_shown_at' => now()])->save();
+        $artwork?->forceFill(['last_shown_at' => now()])->save();
 
         return $artwork;
+    }
+
+    /** Picks the next artwork like next(), without counting it as shown, so previewing leaves the frame's rotation alone. */
+    public function preview(Frame $frame, ?int $currentArtworkId): ?FrameArtwork
+    {
+        return $this->pick($frame, $currentArtworkId) ?? ($currentArtworkId ? $this->pick($frame, null) : null);
     }
 
     public function artwork(Frame $frame, int $artworkId): ?FrameArtwork
@@ -65,6 +96,14 @@ class KioskService
         }
 
         return $artwork;
+    }
+
+    public function imageResponse(FrameArtwork $artwork): StreamedResponse
+    {
+        return Storage::disk(config('frame.disk'))->response($artwork->path, null, [
+            'Content-Type' => 'image/jpeg',
+            'Cache-Control' => 'private, max-age=31536000, immutable',
+        ]);
     }
 
     private function pick(Frame $frame, ?int $excludedArtworkId): ?FrameArtwork

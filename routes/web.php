@@ -2,6 +2,9 @@
 
 use Coleus\Frame\Http\Controllers\FrameController;
 use Coleus\Frame\Http\Controllers\KioskController;
+use Coleus\Frame\Http\Controllers\PreviewArtworkController;
+use Coleus\Frame\Http\Controllers\PreviewController;
+use Coleus\Frame\Http\Controllers\PreviewImageController;
 use Coleus\Frame\Http\Middleware\KioskHeaders;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +21,9 @@ Route::middleware(['web', 'auth'])
             Route::delete('/{frame}', [FrameController::class, 'destroy'])->name('destroy');
             Route::post('/{frame}/token', [FrameController::class, 'regenerateToken'])->name('token.regenerate');
             Route::post('/{frame}/fetch', [FrameController::class, 'fetch'])->name('fetch');
+            Route::get('/{frame}/preview', [PreviewController::class, 'show'])->name('preview');
+            Route::get('/{frame}/preview/next', [PreviewArtworkController::class, 'show'])->name('preview.next');
+            Route::get('/{frame}/preview/image/{artwork}', [PreviewImageController::class, 'show'])->whereNumber('artwork')->name('preview.image');
         });
     });
 

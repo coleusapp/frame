@@ -7,7 +7,12 @@
     <meta name="referrer" content="no-referrer">
     <title>Frame</title>
     <style>
-        html, body { margin: 0; height: 100%; overflow: hidden; background: #000; cursor: none; }
+        html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+        /* Every element, so no child's own cursor can show through; the transparent 1x1 image covers browsers without "none". */
+        html, body, * {
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=') 0 0, none !important;
+        }
+        #cursor-shield { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 2147483647; background: transparent; }
         /* For 90 and 270 the screen's width and height trade places, so #screen is sized from the swapped viewport. */
         #screen {
             position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh;
@@ -41,6 +46,8 @@
             <div class="caption"><div class="caption-title"></div><div class="caption-meta"></div></div>
         </div>
     </div>
+    {{-- Topmost, so the pointer is always over this element (never an image or text, which could pick their own cursor or be selected). --}}
+    <div id="cursor-shield"></div>
 
     <script>
         (function () {
