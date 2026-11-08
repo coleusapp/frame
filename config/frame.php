@@ -3,6 +3,7 @@
 use Coleus\Frame\Sources\ArtInstituteOfChicagoSource;
 use Coleus\Frame\Sources\ClevelandMuseumOfArtSource;
 use Coleus\Frame\Sources\MetropolitanMuseumOfArtSource;
+use Coleus\Frame\Sources\NationalGalleryOfDenmarkSource;
 
 return [
 
@@ -31,12 +32,14 @@ return [
      * Where new artworks come from: classes implementing
      * Coleus\Frame\Contracts\ArtworkSource. Every fetch asks each of them.
      *
-     * Default: the Art Institute of Chicago, The Met and the Cleveland Museum of Art.
+     * Default: the Art Institute of Chicago, The Met, the Cleveland Museum of Art
+     * and SMK (National Gallery of Denmark).
      */
     'sources' => [
         ArtInstituteOfChicagoSource::class,
         MetropolitanMuseumOfArtSource::class,
         ClevelandMuseumOfArtSource::class,
+        NationalGalleryOfDenmarkSource::class,
     ],
 
     /*
@@ -60,6 +63,13 @@ return [
      */
     'cleveland' => [
         'api_url' => 'https://openaccess-api.clevelandart.org/api',
+    ],
+
+    /*
+     * SMK (National Gallery of Denmark) Open API.
+     */
+    'smk' => [
+        'api_url' => 'https://api.smk.dk/api/v1',
     ],
 
     /*
