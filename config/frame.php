@@ -4,6 +4,7 @@ use Coleus\Frame\Sources\ArtInstituteOfChicagoSource;
 use Coleus\Frame\Sources\ClevelandMuseumOfArtSource;
 use Coleus\Frame\Sources\MetropolitanMuseumOfArtSource;
 use Coleus\Frame\Sources\NationalGalleryOfDenmarkSource;
+use Coleus\Frame\Sources\RijksmuseumSource;
 
 return [
 
@@ -32,14 +33,15 @@ return [
      * Where new artworks come from: classes implementing
      * Coleus\Frame\Contracts\ArtworkSource. Every fetch asks each of them.
      *
-     * Default: the Art Institute of Chicago, The Met, the Cleveland Museum of Art
-     * and SMK (National Gallery of Denmark).
+     * Default: the Art Institute of Chicago, The Met, the Cleveland Museum of Art,
+     * SMK (National Gallery of Denmark) and the Rijksmuseum.
      */
     'sources' => [
         ArtInstituteOfChicagoSource::class,
         MetropolitanMuseumOfArtSource::class,
         ClevelandMuseumOfArtSource::class,
         NationalGalleryOfDenmarkSource::class,
+        RijksmuseumSource::class,
     ],
 
     /*
@@ -70,6 +72,13 @@ return [
      */
     'smk' => [
         'api_url' => 'https://api.smk.dk/api/v1',
+    ],
+
+    /*
+     * Rijksmuseum Data Services search API.
+     */
+    'rijks' => [
+        'search_url' => 'https://data.rijksmuseum.nl/search/collection',
     ],
 
     /*
