@@ -24,6 +24,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('inset_left')->default(0);
             $table->string('background_color', 7)->default('#000000');
             $table->boolean('show_caption')->default(true);
+            $table->string('caption_position', 16)->default('bottom-left');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

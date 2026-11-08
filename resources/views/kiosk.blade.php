@@ -29,12 +29,18 @@
         }
         .artwork.is-visible { opacity: 1; }
         .caption {
-            position: absolute; left: 24px; bottom: 20px; max-width: 60%;
+            position: absolute; max-width: 60%;
             color: rgba(255, 255, 255, .85); font: 14px/1.4 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             text-shadow: 0 1px 3px rgba(0, 0, 0, .9);
             opacity: 0; -webkit-transition: opacity 1.5s ease-in-out; transition: opacity 1.5s ease-in-out;
         }
         .caption.is-visible { opacity: 1; }
+        .position-top-left, .position-top-center, .position-top-right { top: 20px; }
+        .position-bottom-left, .position-bottom-center, .position-bottom-right { bottom: 20px; }
+        .position-middle-left, .position-middle-right { top: 50%; -webkit-transform: translateY(-50%); transform: translateY(-50%); }
+        .position-top-left, .position-middle-left, .position-bottom-left { left: 24px; text-align: left; }
+        .position-top-right, .position-middle-right, .position-bottom-right { right: 24px; text-align: right; }
+        .position-top-center, .position-bottom-center { left: 50%; text-align: center; -webkit-transform: translateX(-50%); transform: translateX(-50%); }
         .caption-title { font-style: italic; }
     </style>
 </head>
@@ -43,7 +49,7 @@
         <div id="stage" style="top: {{ $inset['top'] }}px; right: {{ $inset['right'] }}px; bottom: {{ $inset['bottom'] }}px; left: {{ $inset['left'] }}px;">
             <img class="artwork" alt="">
             <img class="artwork" alt="">
-            <div class="caption"><div class="caption-title"></div><div class="caption-meta"></div></div>
+            <div class="caption position-bottom-left"><div class="caption-title"></div><div class="caption-meta"></div></div>
         </div>
     </div>
     {{-- Topmost, so the pointer is always over this element (never an image or text, which could pick their own cursor or be selected). --}}
@@ -92,7 +98,7 @@
 
                 captionTitle.textContent = artwork.title || '';
                 captionMeta.textContent = [artwork.artist, artwork.date].filter(Boolean).join(', ');
-                caption.className = artwork.show_caption ? 'caption is-visible' : 'caption';
+                caption.className = 'caption position-' + (artwork.caption_position || 'bottom-left') + (artwork.show_caption ? ' is-visible' : '');
 
                 currentId = artwork.id;
                 schedule(Math.max(5, artwork.interval_seconds || 60) * 1000);

@@ -27,6 +27,7 @@ class FrameResource extends JsonResource
             'inset_left' => $this->inset_left,
             'background_color' => $this->background_color,
             'show_caption' => $this->show_caption,
+            'caption_position' => $this->caption_position,
             'is_active' => $this->is_active,
             'artworks_count' => $this->artworks_count ?? 0,
         ];

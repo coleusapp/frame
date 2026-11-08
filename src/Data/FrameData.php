@@ -2,6 +2,7 @@
 
 namespace Coleus\Frame\Data;
 
+use Coleus\Frame\Enums\CaptionPosition;
 use Spatie\LaravelData\Data;
 
 class FrameData extends Data
@@ -21,6 +22,7 @@ class FrameData extends Data
         public int $inset_left,
         public string $background_color,
         public bool $show_caption,
+        public CaptionPosition $caption_position,
         public bool $is_active,
     ) {
         //
@@ -46,6 +48,7 @@ class FrameData extends Data
             'inset_left' => $properties['inset_left'] ?? 0,
             'background_color' => strtolower($properties['background_color'] ?? '#000000'),
             'show_caption' => filter_var($properties['show_caption'] ?? true, FILTER_VALIDATE_BOOLEAN),
+            'caption_position' => $properties['caption_position'] ?? CaptionPosition::BottomLeft->value,
             'is_active' => filter_var($properties['is_active'] ?? false, FILTER_VALIDATE_BOOLEAN),
         ];
     }

@@ -22,6 +22,7 @@ const form = useForm<FrameRequest>({
     inset_left: resource.data.inset_left,
     background_color: resource.data.background_color,
     show_caption: resource.data.show_caption,
+    caption_position: resource.data.caption_position,
     is_active: resource.data.is_active,
 });
 

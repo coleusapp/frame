@@ -27,6 +27,7 @@ class FrameFactory extends Factory
             'inset_left' => 0,
             'background_color' => '#000000',
             'show_caption' => true,
+            'caption_position' => 'bottom-left',
             'is_active' => true,
         ];
     }

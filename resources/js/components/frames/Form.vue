@@ -53,6 +53,22 @@ const sources = inject(sourcesKey) as OptionCollection;
         <FormKit type="number" name="inset_left" label="Left Inset" number="integer" min="0" max="1000" validation="number|between:0,1000" help="Pixels the frame hides." />
     </div>
     <FormKit type="color" name="background_color" label="Background" help="Shown around the art, e.g. to match the mat." />
-    <FormKit type="switch" name="show_caption" label="Show Caption" help="The title, artist and date in the corner of the art." />
+    <FormKit type="switch" name="show_caption" label="Show Caption" help="The title, artist and date over the art." />
+    <FormKit
+        v-if="value?.show_caption"
+        type="select"
+        name="caption_position"
+        label="Caption Position"
+        :options="[
+            { label: 'Top left', value: 'top-left' },
+            { label: 'Top center', value: 'top-center' },
+            { label: 'Top right', value: 'top-right' },
+            { label: 'Middle left', value: 'middle-left' },
+            { label: 'Middle right', value: 'middle-right' },
+            { label: 'Bottom left', value: 'bottom-left' },
+            { label: 'Bottom center', value: 'bottom-center' },
+            { label: 'Bottom right', value: 'bottom-right' },
+        ]"
+    />
     <FormKit type="switch" name="is_active" label="Active" help="An inactive frame's kiosk URL stops working and it isn't refreshed." />
 </template>

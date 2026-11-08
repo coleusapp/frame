@@ -2,6 +2,7 @@
 
 namespace Coleus\Frame\Http\Requests;
 
+use Coleus\Frame\Enums\CaptionPosition;
 use Coleus\Frame\Facades\Frames;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -46,6 +47,7 @@ class FrameRequest extends FormRequest
             'inset_left' => ['nullable', 'integer', 'min:0', 'max:'.self::MAX_INSET],
             'background_color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'show_caption' => ['nullable', 'boolean'],
+            'caption_position' => ['nullable', Rule::enum(CaptionPosition::class)],
             'is_active' => ['required', 'boolean'],
         ];
     }
@@ -61,6 +63,7 @@ class FrameRequest extends FormRequest
             'sources.min' => 'Pick at least one source.',
             'sources.*.in' => 'Pick sources from the list.',
             'rotation.in' => 'Pick a rotation from the list.',
+            'caption_position.enum' => 'Pick a caption position from the list.',
             'background_color.regex' => 'Pick a colour like #000000.',
             'interval_seconds.min' => 'Show each artwork for at least '.self::MIN_INTERVAL_SECONDS.' seconds.',
             'interval_seconds.max' => 'Show each artwork for at most a day ('.self::MAX_INTERVAL_SECONDS.' seconds).',

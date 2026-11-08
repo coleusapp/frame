@@ -57,6 +57,7 @@ class KioskService
             'inset' => $this->inset($frame),
             'background_color' => $frame->background_color,
             'show_caption' => $frame->show_caption,
+            'caption_position' => $frame->caption_position,
             'rotation' => $frame->rotation,
         ];
     }

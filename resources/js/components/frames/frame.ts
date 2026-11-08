@@ -18,6 +18,7 @@ export type FrameData = {
     inset_left: number;
     background_color: string;
     show_caption: boolean;
+    caption_position: string;
     is_active: boolean;
     artworks_count: number;
 };
@@ -40,9 +41,10 @@ export function updateRequest({
     inset_left,
     background_color,
     show_caption,
+    caption_position,
     is_active,
 }: FrameData): FrameRequest {
-    return { name, search_query, sources, interval_seconds, display_width, display_height, rotation, inset_top, inset_right, inset_bottom, inset_left, background_color, show_caption, is_active };
+    return { name, search_query, sources, interval_seconds, display_width, display_height, rotation, inset_top, inset_right, inset_bottom, inset_left, background_color, show_caption, caption_position, is_active };
 }
 
 export const resourceKey = Symbol() as InjectionKey<FrameResource>;

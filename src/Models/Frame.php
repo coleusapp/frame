@@ -3,6 +3,7 @@
 namespace Coleus\Frame\Models;
 
 use Coleus\Frame\Database\Factories\FrameFactory;
+use Coleus\Frame\Enums\CaptionPosition;
 use Coleus\Frame\FrameModelDefaults;
 use Coleus\Users\Concerns\HasUser;
 use Coleus\Users\Models\Scopes\UserScope;
@@ -30,6 +31,7 @@ use Illuminate\Support\Carbon;
  * @property int $inset_left
  * @property string $background_color Hex colour of the kiosk page around the art, e.g. #000000.
  * @property bool $show_caption
+ * @property CaptionPosition $caption_position
  * @property bool $is_active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -61,6 +63,7 @@ class Frame extends FrameModelDefaults
         'inset_left',
         'background_color',
         'show_caption',
+        'caption_position',
         'is_active',
     ];
 
@@ -73,6 +76,7 @@ class Frame extends FrameModelDefaults
         'inset_left' => 0,
         'background_color' => '#000000',
         'show_caption' => true,
+        'caption_position' => 'bottom-left',
         'is_active' => true,
     ];
 
@@ -89,6 +93,7 @@ class Frame extends FrameModelDefaults
             'inset_bottom' => 'integer',
             'inset_left' => 'integer',
             'show_caption' => 'boolean',
+            'caption_position' => CaptionPosition::class,
             'is_active' => 'boolean',
         ];
     }
