@@ -9,6 +9,7 @@ use Coleus\Frame\Models\Frame;
 use Coleus\Frame\Models\FrameArtwork;
 use Coleus\Frame\Support\ImageFitter;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +23,17 @@ class ArtworkService
         FetchFrameArtworks::dispatch($frame, $count);
     }
 
-    public function fetch(Frame $frame, int $count): void
+    /**
+     * Queues a fetch that, once it has stored at least one new artwork,
+     * deletes every artwork the frame has now, so the frame never goes blank.
+     */
+    public function queueReplacement(Frame $frame, int $count = 20): void
+    {
+        FetchFrameArtworks::dispatch($frame, $count, $frame->artworks()->max('id'));
+    }
+
+    /** With $replaceUpTo, artworks with that id or lower are deleted if the fetch stored any newer one. */
+    public function fetch(Frame $frame, int $count, ?int $replaceUpTo = null): void
     {
         foreach ($this->sourcesOf($frame) as $source) {
             $existingSourceIds = $frame->artworks()
@@ -33,6 +44,10 @@ class ArtworkService
             $source->search($frame->search_query, $count)
                 ->reject(fn (ArtworkData $artwork) => in_array($artwork->source_id, $existingSourceIds, true))
                 ->each(fn (ArtworkData $artwork) => $this->store($frame, $source, $artwork));
+        }
+
+        if ($replaceUpTo) {
+            $this->replace($frame, $replaceUpTo);
         }
 
         $this->prune($frame);
@@ -100,6 +115,15 @@ class ArtworkService
         ]);
     }
 
+    private function replace(Frame $frame, int $replaceUpTo): void
+    {
+        if (!$frame->artworks()->where('id', '>', $replaceUpTo)->exists()) {
+            return;
+        }
+
+        $this->deleteArtworks($frame->artworks()->where('id', '<=', $replaceUpTo)->get());
+    }
+
     private function prune(Frame $frame): void
     {
         $excess = $frame->artworks()->count() - config('frame.pool_size');
@@ -108,15 +132,20 @@ class ArtworkService
             return;
         }
 
-        $frame->artworks()
+        $this->deleteArtworks($frame->artworks()
             ->oldest()
             ->oldest('id')
             ->limit($excess)
-            ->get()
-            ->each(function (FrameArtwork $artwork): void {
-                $this->disk()->delete($artwork->path);
-                $artwork->delete();
-            });
+            ->get());
+    }
+
+    /** @param  EloquentCollection<int, FrameArtwork>  $artworks */
+    private function deleteArtworks(EloquentCollection $artworks): void
+    {
+        $artworks->each(function (FrameArtwork $artwork): void {
+            $this->disk()->delete($artwork->path);
+            $artwork->delete();
+        });
     }
 
     /**

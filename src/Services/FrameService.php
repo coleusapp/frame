@@ -18,6 +18,9 @@ class FrameService extends Service
 
     protected $data = FrameData::class;
 
+    /** Changing any of these asks for different artworks, so the frame's current ones are replaced. */
+    public const array ArtworkAttributes = ['sources', 'search_query', 'display_width', 'display_height'];
+
     /** @return Builder<Frame> */
     public function defaultQuery(): Builder
     {
@@ -54,6 +57,17 @@ class FrameService extends Service
         $frame->save();
 
         return new KioskToken($frame, $token);
+    }
+
+    public function update(mixed $model, mixed $payload): bool
+    {
+        $updated = $model->update(FrameData::from($payload)->toArray());
+
+        if ($model->wasChanged(self::ArtworkAttributes)) {
+            Frames::artwork()->queueReplacement($model);
+        }
+
+        return $updated;
     }
 
     public function regenerateToken(Frame $frame): KioskToken

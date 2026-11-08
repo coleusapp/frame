@@ -28,15 +28,17 @@ class FetchFrameArtworks implements NotTenantAware, ShouldBeUnique, ShouldQueue
     public function __construct(
         public Frame $frame,
         public int $count = 20,
+        public ?int $replaceUpTo = null,
     ) {}
 
+    /** A replacement has its own key, so a plain fetch already queued for the frame can't swallow it. */
     public function uniqueId(): string
     {
-        return (string) $this->frame->id;
+        return $this->replaceUpTo ? "{$this->frame->id}-replace" : (string) $this->frame->id;
     }
 
     public function handle(): void
     {
-        Frames::artwork()->fetch($this->frame, $this->count);
+        Frames::artwork()->fetch($this->frame, $this->count, $this->replaceUpTo);
     }
 }
