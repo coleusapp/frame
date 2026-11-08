@@ -13,6 +13,15 @@ const form = useForm<FrameRequest>({
     search_query: resource.data.search_query,
     sources: resource.data.sources,
     interval_seconds: resource.data.interval_seconds,
+    display_width: resource.data.display_width,
+    display_height: resource.data.display_height,
+    rotation: resource.data.rotation,
+    inset_top: resource.data.inset_top,
+    inset_right: resource.data.inset_right,
+    inset_bottom: resource.data.inset_bottom,
+    inset_left: resource.data.inset_left,
+    background_color: resource.data.background_color,
+    show_caption: resource.data.show_caption,
     is_active: resource.data.is_active,
 });
 

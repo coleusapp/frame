@@ -71,8 +71,8 @@ class ArtworkService
         try {
             $jpeg = ImageFitter::fitAsJpeg(
                 $source->image($artwork),
-                config('frame.display.width'),
-                config('frame.display.height'),
+                $frame->display_width,
+                $frame->display_height,
             );
         } catch (Throwable $exception) {
             Log::warning('Frame artwork image skipped.', [

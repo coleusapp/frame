@@ -30,5 +30,29 @@ const sources = inject(sourcesKey) as OptionCollection;
         validation="required|number|between:10,86400"
         help="In seconds."
     />
+    <div class="grid grid-cols-2 gap-4">
+        <FormKit type="number" name="display_width" label="Image Width" number="integer" min="320" max="7680" validation="number|between:320,7680" help="In pixels. Newly fetched artworks are stored at most this wide." />
+        <FormKit type="number" name="display_height" label="Image Height" number="integer" min="320" max="7680" validation="number|between:320,7680" help="In pixels. Newly fetched artworks are stored at most this tall." />
+    </div>
+    <FormKit
+        type="select"
+        name="rotation"
+        label="Rotation"
+        :options="[
+            { label: 'None', value: 0 },
+            { label: '90° clockwise', value: 90 },
+            { label: '180°', value: 180 },
+            { label: '270° clockwise (90° counter-clockwise)', value: 270 },
+        ]"
+        help="Turns the page for a screen hung on its side. Width, height and insets are as the art hangs."
+    />
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <FormKit type="number" name="inset_top" label="Top Inset" number="integer" min="0" max="1000" validation="number|between:0,1000" help="Pixels the frame hides." />
+        <FormKit type="number" name="inset_right" label="Right Inset" number="integer" min="0" max="1000" validation="number|between:0,1000" help="Pixels the frame hides." />
+        <FormKit type="number" name="inset_bottom" label="Bottom Inset" number="integer" min="0" max="1000" validation="number|between:0,1000" help="Pixels the frame hides." />
+        <FormKit type="number" name="inset_left" label="Left Inset" number="integer" min="0" max="1000" validation="number|between:0,1000" help="Pixels the frame hides." />
+    </div>
+    <FormKit type="color" name="background_color" label="Background" help="Shown around the art, e.g. to match the mat." />
+    <FormKit type="switch" name="show_caption" label="Show Caption" help="The title, artist and date in the corner of the art." />
     <FormKit type="switch" name="is_active" label="Active" help="An inactive frame's kiosk URL stops working and it isn't refreshed." />
 </template>

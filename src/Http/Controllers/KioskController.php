@@ -16,10 +16,13 @@ class KioskController extends Controller
 {
     public function show(string $token): View
     {
-        $this->frameOrFail($token);
+        $frame = $this->frameOrFail($token);
 
         return view('frame::kiosk', [
             'nextUrl' => route('frame.kiosk.next', ['token' => $token], false),
+            'inset' => Frames::kiosk()->inset($frame),
+            'backgroundColor' => $frame->background_color,
+            'rotation' => $frame->rotation,
         ]);
     }
 
@@ -40,6 +43,10 @@ class KioskController extends Controller
             'artist' => $artwork->artist_display,
             'date' => $artwork->date_display,
             'interval_seconds' => $frame->interval_seconds,
+            'inset' => Frames::kiosk()->inset($frame),
+            'background_color' => $frame->background_color,
+            'show_caption' => $frame->show_caption,
+            'rotation' => $frame->rotation,
         ]);
     }
 

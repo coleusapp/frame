@@ -9,6 +9,15 @@ export type FrameData = {
     search_query: string | null;
     sources: string[];
     interval_seconds: number;
+    display_width: number;
+    display_height: number;
+    rotation: number;
+    inset_top: number;
+    inset_right: number;
+    inset_bottom: number;
+    inset_left: number;
+    background_color: string;
+    show_caption: boolean;
     is_active: boolean;
     artworks_count: number;
 };
@@ -17,8 +26,23 @@ export type FrameResource = Resource<FrameData>;
 export type FrameRequest = Request<Omit<FrameData, 'artworks_count'>>;
 export type FrameCollection = Collection<FrameData>;
 
-export function updateRequest({ name, search_query, sources, interval_seconds, is_active }: FrameData): FrameRequest {
-    return { name, search_query, sources, interval_seconds, is_active };
+export function updateRequest({
+    name,
+    search_query,
+    sources,
+    interval_seconds,
+    display_width,
+    display_height,
+    rotation,
+    inset_top,
+    inset_right,
+    inset_bottom,
+    inset_left,
+    background_color,
+    show_caption,
+    is_active,
+}: FrameData): FrameRequest {
+    return { name, search_query, sources, interval_seconds, display_width, display_height, rotation, inset_top, inset_right, inset_bottom, inset_left, background_color, show_caption, is_active };
 }
 
 export const resourceKey = Symbol() as InjectionKey<FrameResource>;

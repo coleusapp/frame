@@ -28,7 +28,11 @@ class FrameService extends Service
 
     public function default(): Frame
     {
-        return new Frame(['sources' => Frames::artwork()->sourceKeys()]);
+        return new Frame([
+            'sources' => Frames::artwork()->sourceKeys(),
+            'display_width' => config('frame.display.width'),
+            'display_height' => config('frame.display.height'),
+        ]);
     }
 
     public function show(Frame $frame): Frame

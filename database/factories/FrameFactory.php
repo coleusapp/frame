@@ -18,6 +18,15 @@ class FrameFactory extends Factory
             'search_query' => null,
             'sources' => ['aic'],
             'interval_seconds' => 60,
+            'display_width' => config('frame.display.width'),
+            'display_height' => config('frame.display.height'),
+            'rotation' => 0,
+            'inset_top' => 0,
+            'inset_right' => 0,
+            'inset_bottom' => 0,
+            'inset_left' => 0,
+            'background_color' => '#000000',
+            'show_caption' => true,
             'is_active' => true,
         ];
     }

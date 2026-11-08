@@ -63,7 +63,9 @@ return [
     ],
 
     /*
-     * Largest size a stored artwork is fitted into (never cropped or upscaled).
+     * Default for a new frame's display size: the largest size its stored
+     * artworks are fitted into (never cropped or upscaled). Each frame can
+     * change its own.
      */
     'display' => [
         'width' => 1920,

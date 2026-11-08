@@ -32,6 +32,17 @@ class KioskService
             ->first();
     }
 
+    /** @return array{top: int, right: int, bottom: int, left: int} */
+    public function inset(Frame $frame): array
+    {
+        return [
+            'top' => $frame->inset_top,
+            'right' => $frame->inset_right,
+            'bottom' => $frame->inset_bottom,
+            'left' => $frame->inset_left,
+        ];
+    }
+
     public function next(Frame $frame, ?int $currentArtworkId): ?FrameArtwork
     {
         $artwork = $this->pick($frame, $currentArtworkId) ?? ($currentArtworkId ? $this->pick($frame, null) : null);

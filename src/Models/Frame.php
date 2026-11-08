@@ -21,6 +21,15 @@ use Illuminate\Support\Carbon;
  * @property string|null $search_query
  * @property list<string> $sources ArtworkSource::key() of each source the frame fetches from.
  * @property int $interval_seconds
+ * @property int $display_width Largest size, with display_height, the frame's artworks are stored at.
+ * @property int $display_height
+ * @property int $rotation Clockwise degrees the kiosk page is turned (0, 90, 180 or 270), for a screen hung on its side.
+ * @property int $inset_top Pixels the physical frame hides at the top of the screen; likewise for the other insets.
+ * @property int $inset_right
+ * @property int $inset_bottom
+ * @property int $inset_left
+ * @property string $background_color Hex colour of the kiosk page around the art, e.g. #000000.
+ * @property bool $show_caption
  * @property bool $is_active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -43,11 +52,27 @@ class Frame extends FrameModelDefaults
         'search_query',
         'sources',
         'interval_seconds',
+        'display_width',
+        'display_height',
+        'rotation',
+        'inset_top',
+        'inset_right',
+        'inset_bottom',
+        'inset_left',
+        'background_color',
+        'show_caption',
         'is_active',
     ];
 
     protected $attributes = [
         'interval_seconds' => 60,
+        'rotation' => 0,
+        'inset_top' => 0,
+        'inset_right' => 0,
+        'inset_bottom' => 0,
+        'inset_left' => 0,
+        'background_color' => '#000000',
+        'show_caption' => true,
         'is_active' => true,
     ];
 
@@ -56,6 +81,14 @@ class Frame extends FrameModelDefaults
         return [
             'sources' => 'array',
             'interval_seconds' => 'integer',
+            'display_width' => 'integer',
+            'display_height' => 'integer',
+            'rotation' => 'integer',
+            'inset_top' => 'integer',
+            'inset_right' => 'integer',
+            'inset_bottom' => 'integer',
+            'inset_left' => 'integer',
+            'show_caption' => 'boolean',
             'is_active' => 'boolean',
         ];
     }

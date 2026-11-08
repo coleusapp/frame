@@ -8,6 +8,15 @@
     <title>Frame</title>
     <style>
         html, body { margin: 0; height: 100%; overflow: hidden; background: #000; cursor: none; }
+        /* For 90 and 270 the screen's width and height trade places, so #screen is sized from the swapped viewport. */
+        #screen {
+            position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh;
+            -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);
+        }
+        #screen.rotation-90 { width: 100vh; height: 100vw; -webkit-transform: translate(-50%, -50%) rotate(90deg); transform: translate(-50%, -50%) rotate(90deg); }
+        #screen.rotation-180 { -webkit-transform: translate(-50%, -50%) rotate(180deg); transform: translate(-50%, -50%) rotate(180deg); }
+        #screen.rotation-270 { width: 100vh; height: 100vw; -webkit-transform: translate(-50%, -50%) rotate(270deg); transform: translate(-50%, -50%) rotate(270deg); }
+        #stage { position: absolute; overflow: hidden; }
         .artwork {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: contain; opacity: 0;
@@ -24,10 +33,14 @@
         .caption-title { font-style: italic; }
     </style>
 </head>
-<body>
-    <img class="artwork" alt="">
-    <img class="artwork" alt="">
-    <div class="caption"><div class="caption-title"></div><div class="caption-meta"></div></div>
+<body style="background: {{ $backgroundColor }};">
+    <div id="screen" class="rotation-{{ $rotation }}">
+        <div id="stage" style="top: {{ $inset['top'] }}px; right: {{ $inset['right'] }}px; bottom: {{ $inset['bottom'] }}px; left: {{ $inset['left'] }}px;">
+            <img class="artwork" alt="">
+            <img class="artwork" alt="">
+            <div class="caption"><div class="caption-title"></div><div class="caption-meta"></div></div>
+        </div>
+    </div>
 
     <script>
         (function () {
@@ -35,6 +48,8 @@
             var RETRY_MS = 60 * 1000;
             var RELOAD_MS = 24 * 60 * 60 * 1000;
 
+            var screenElement = document.getElementById('screen');
+            var stage = document.getElementById('stage');
             var layers = document.querySelectorAll('.artwork');
             var caption = document.querySelector('.caption');
             var captionTitle = document.querySelector('.caption-title');
@@ -46,9 +61,23 @@
                 window.setTimeout(next, ms);
             }
 
+            function applyInset(inset) {
+                if (!inset) {
+                    return;
+                }
+
+                stage.style.top = inset.top + 'px';
+                stage.style.right = inset.right + 'px';
+                stage.style.bottom = inset.bottom + 'px';
+                stage.style.left = inset.left + 'px';
+            }
+
             function show(artwork, src) {
                 var back = 1 - front;
 
+                applyInset(artwork.inset);
+                document.body.style.background = artwork.background_color || '';
+                screenElement.className = 'rotation-' + (artwork.rotation || 0);
                 layers[back].src = src;
                 layers[back].className = 'artwork is-visible';
                 layers[front].className = 'artwork';
@@ -56,7 +85,7 @@
 
                 captionTitle.textContent = artwork.title || '';
                 captionMeta.textContent = [artwork.artist, artwork.date].filter(Boolean).join(', ');
-                caption.className = 'caption is-visible';
+                caption.className = artwork.show_caption ? 'caption is-visible' : 'caption';
 
                 currentId = artwork.id;
                 schedule(Math.max(5, artwork.interval_seconds || 60) * 1000);
